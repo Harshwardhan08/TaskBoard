@@ -22,9 +22,10 @@ const authenticateJWT = (req, res, next) => {
     }
 };
 
-router.post('/user', UserController.createUser)
-router.put('/user/:id', authenticateJWT, UserController.updateUser)
-router.delete('/user/:id', authenticateJWT, UserController.deleteUser)
-router.get('/user', UserController.getUser)
+router.post('/user', UserController.createUser);
+router.get('/getTeamUser', authenticateJWT, UserController.getTeamUser);
+router.put('/user', authenticateJWT, UserController.updateUser);
+router.delete('/user', authenticateJWT, UserController.deleteUser);
+router.post('/usertoken', UserController.getUser);
 
 module.exports = router

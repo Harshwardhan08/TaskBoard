@@ -8,8 +8,8 @@ createTask = (req, res) => {
             error: 'Task details incomplete',
         })
     }
-
-    const task = new Task(body)
+    
+    const task = new Task(body);
 
     if (!task) {
         return res.status(400).json({ success: false, error: err })
@@ -49,9 +49,9 @@ updateTask = async (req, res) => {
                 message: 'Task not found!',
             })
         }
-        task.name = body.name;
-        task.designation = body.designation;
-        task.team = body.team;
+        body.heading && (task.heading = body.heading);
+        body.details && (task.details = body.details);
+        body.status && (task.status = body.status);
         task
             .save()
             .then(() => {
@@ -86,18 +86,23 @@ deleteTask = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
-getTask = async (req, res) => {
-    await Task.findOne({ _id: req.params.id }, (err, task) => {
+getTeamTasks = async (req, res) => {
+    await Task.find({ team: req.user.team }, (err, tasks) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
 
-        if (!task) {
+        if (!tasks) {
             return res
                 .status(404)
                 .json({ success: false, error: `Task not found` })
         }
-        return res.status(200).json({ success: true, data: task })
+        const groupedTasks = {};
+        tasks.forEach(task => {
+            if (groupedTasks[task.status]) groupedTasks[task.status].push(task);
+            else groupedTasks[task.status] = [task];
+        })
+        return res.status(200).json({ success: true, data: groupedTasks })
     }).catch(err => console.log(err))
 }
 
@@ -105,5 +110,5 @@ module.exports = {
     createTask,
     updateTask,
     deleteTask,
-    getTask,
+    getTeamTasks,
 }
