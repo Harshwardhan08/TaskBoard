@@ -24,9 +24,9 @@ const useStyles = makeStyles((theme) => ({
 
 const AddTaskDialog = (props) => {
     const classes = useStyles();
-    const [name, setName] = React.useState('');
-    const [designation, setDesignation] = React.useState('');
-    const [team, setTeam] = React.useState('');
+    const [name, setName] = React.useState((props.user && props.user.name) || '');
+    const [designation, setDesignation] = React.useState((props.user && props.user.designation) || '');
+    const [team, setTeam] = React.useState((props.user && props.user.team) || '');
 
     const handleName = (event) => {
         setName(event.target.value);
@@ -43,14 +43,16 @@ const AddTaskDialog = (props) => {
     };
     return (
         <Dialog open={props.open} onClose={() => props.setSignUpState(false)} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Sign Up</DialogTitle>
+            <DialogTitle id="form-dialog-title">{props.edit? 'Edit User': 'Sign Up'}</DialogTitle>
             <DialogContent>
                 <Grid>
                     <TextField
+                        disabled={props.edit}
                         required
                         label='Name'
                         variant='outlined'
                         fullWidth
+                        value={name}
                         onChange={handleName}
                         id="outlined-required"
                         className={classes.addCard}
@@ -62,6 +64,7 @@ const AddTaskDialog = (props) => {
                         label='Designation'
                         variant='outlined'
                         fullWidth
+                        value={designation}
                         onChange={handleDesignation}
                         className={classes.addCard}
                     />
@@ -72,13 +75,14 @@ const AddTaskDialog = (props) => {
                         label='Team'
                         variant='outlined'
                         fullWidth
+                        value={team}
                         onChange={handleTeam}
                         className={classes.addCard}
                     />
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button color="primary" onClick={handleSignUp}>Sign Up</Button>
+                <Button color="primary" onClick={handleSignUp}>{props.edit? 'Edit': 'Sign Up'}</Button>
                 <Button color="secondary" onClick={() => props.setSignUpState(false)}>Close</Button>
             </DialogActions>
         </Dialog>

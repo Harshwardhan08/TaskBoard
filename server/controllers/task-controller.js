@@ -52,6 +52,7 @@ updateTask = async (req, res) => {
         body.heading && (task.heading = body.heading);
         body.details && (task.details = body.details);
         body.status && (task.status = body.status);
+        body.users && (task.users = body.users);
         task
             .save()
             .then(() => {

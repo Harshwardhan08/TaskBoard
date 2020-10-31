@@ -62,7 +62,7 @@ updateUser = async (req, res) => {
             .then(() => {
                 return res.status(200).json({
                     success: true,
-                    id: user._id,
+                    data: user,
                     message: 'User updated!',
                 })
             })

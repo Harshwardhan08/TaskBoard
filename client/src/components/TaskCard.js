@@ -1,9 +1,11 @@
 
 import React from 'react';
-import { Card, CardContent, Grid, Typography, Box } from '@material-ui/core';
+import { Card, CardContent, Grid, Typography, Box, Button, IconButton } from '@material-ui/core';
 import Avatar from './Avatar';
+import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
+import AddTaskDialog from './AddTaskDialog';
 
 const useStyles = makeStyles(theme => ({
     cardRoot: {
@@ -37,35 +39,70 @@ const useStyles = makeStyles(theme => ({
 
 export default function TaskCard(props) {
     const classes = useStyles();
+    const [editTaskDialog, setEditTaskDialog] = React.useState(false);
     const { task } = props;
     const deleteTask = async (_id) => {
-        const task = await(await fetch(`http://localhost:4000/api/task/${_id}`, {
-			method: 'DELETE',
-			headers: {
-				'Content-type': 'application/json; charset=UTF-8',
-				'Access-Control-Allow-Origin': '*',
-				'Authorization': props.authToken
-			},
-		})).json();
-		if (task.success) {
-			props.fetchTasks();
-		}
+        const task = await (await fetch(`http://localhost:4000/api/task/${_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'Access-Control-Allow-Origin': '*',
+                'Authorization': props.authToken
+            },
+        })).json();
+        if (task.success) {
+            props.fetchTasks();
+        }
     }
+
+    const editTask = async (data) => {
+        try {
+            const resp = await (await fetch(`http://localhost:4000/api/task/${props.task._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    'Access-Control-Allow-Origin': '*',
+                    'Authorization': props.authToken
+                },
+                body: JSON.stringify(data)
+            })).json();
+            if (resp.success) {
+                props.fetchTasks()
+            }
+        }
+        catch (error) {
+            console.log('Error Encountered', error);
+        }
+    }
+    const { heading, details, users: assignee } = props.task;
     return (
         <Card
             className={classes.cardRoot}
             variant="outlined"
             style={{ borderTop: `5px solid red` }}
         >
+            {editTaskDialog && <AddTaskDialog
+                heading={heading}
+                details={details}
+                assignee={assignee}
+                open={editTaskDialog}
+                addNewTask={editTask}
+                handleClose={() => setEditTaskDialog(false)}
+                user={props.user}
+                teamMembers={props.teamMembers}
+                status={props.status}
+                edit
+            />}
             <div className={classes.details}>
-                <CardContent style={{ position:'relative' }} className={classes.content}>
+                <CardContent style={{ position: 'relative' }} className={classes.content}>
                     <Typography noWrap component="h5" variant="h6">
                         {task.heading}
-                        <DeleteIcon onClick={() => deleteTask(task._id)} className={classes.delete} style={{ position:'absolute', top:'10px', right:'10px' }} />
+                        <IconButton size='small' onClick={() => setEditTaskDialog(true)} className={classes.delete} style={{ position: 'absolute', top: '10px', right: '40px' }}><EditIcon /></IconButton>
+                        <IconButton size='small' onClick={() => deleteTask(task._id)} className={classes.delete} style={{ position: 'absolute', top: '10px', right: '10px' }}><DeleteIcon /></IconButton>
                     </Typography>
                     <Grid item xs={12}>
                         <Box component="small" m={1}>
-                            <Typography style={{overflow: 'hidden', textOverflow: 'ellipsis', height:'35px'}} variant='body2'>{task.details}</Typography>
+                            <Typography style={{ overflow: 'hidden', textOverflow: 'ellipsis', height: '35px' }} variant='body2'>{task.details}</Typography>
                         </Box>
                     </Grid>
                     <Grid item xs={12} className={classes.footer}>

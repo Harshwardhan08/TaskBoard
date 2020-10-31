@@ -144,7 +144,7 @@ class Board extends Component {
 								<Divider />
 								{/* <BoardsList boards={task.boards} /> */}
 								{/* {this.state.tasks.map(task => <TaskCard {...this.props} task={task} />)} */}
-								<CardsList {...this.props} groupTasks={groupedTasks[category]} status={category} fetchTasks={this.fetchTasks} />
+								<CardsList {...this.props} groupTasks={groupedTasks[category]} status={category} fetchTasks={this.fetchTasks} teamMembers={this.state.teamMembers} />
 								<Divider className={classes.divider} />
 								<AddNewCard teamMembers={this.state.teamMembers} user={this.props.user} status={category} addNewTask={this.addNewTask} />
 							</Paper>

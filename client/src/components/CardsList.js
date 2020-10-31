@@ -39,13 +39,12 @@ class CardsList extends Component {
     }
 
     render() {
-        const { classes } = this.props;
-        const { groupTasks, user } = this.props;
+        const { classes, groupTasks, user, teamMembers, fetchTasks, status, authToken } = this.props;
         return (
-            <Grid onDragOver={this.onDragOver} onDrop={(event) => this.onDrop(event, this.props.status)} className={classes.card}>
+            <Grid onDragOver={this.onDragOver} onDrop={(event) => this.onDrop(event, status)} className={classes.card}>
                 {(groupTasks && groupTasks.length)? groupTasks.map((task, index) => (
                     <Grid draggable="true" key={index} onDragStart={(event) => this.onDragStart(event, task._id)} item xs={12}>
-                        <TaskCard user={user} task={task} authToken={this.props.authToken} fetchTasks={this.props.fetchTasks} />
+                        <TaskCard user={user} task={task} authToken={authToken} status={status} fetchTasks={fetchTasks} teamMembers={teamMembers}/>
                     </Grid>
                 )): <div><br/><br/></div>}
             </Grid>

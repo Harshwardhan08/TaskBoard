@@ -92,6 +92,10 @@ class Login extends Component {
 		}
 	}
 
+	updateUser = (userDetails) => {
+		this.setState({ userDetails });
+	}
+
 	handleSignUp = async (data) => {
 		const signedUp = await(await fetch('http://localhost:4000/api/user', {
 			method: 'POST',
@@ -120,7 +124,7 @@ class Login extends Component {
 
 	render() {
 		const { classes } = this.props;
-		if (this.state.loggedIn) return <BoardOutline authToken={this.state.authToken} user={this.state.userDetails} logout={this.logout} />
+		if (this.state.loggedIn) return <BoardOutline authToken={this.state.authToken} user={this.state.userDetails} logout={this.logout} updateUser={this.updateUser} />
 		return (
 			<Container component="main" maxWidth="xs">
 				<SignUp open={this.state.openSignUpDialog} handleSignUp={this.handleSignUp} setSignUpState={this.setSignUpState} />

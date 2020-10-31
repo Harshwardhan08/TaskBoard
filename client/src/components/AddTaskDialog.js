@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Button,
     TextField,
@@ -29,8 +29,8 @@ const useStyles = makeStyles((theme) => ({
 const AddTaskDialog = (props) => {
     const classes = useStyles();
     const [assignee, setAssignee] = React.useState([]);
-    const [heading, setHeading] = React.useState('');
-    const [details, setDetails] = React.useState('');
+    const [heading, setHeading] = React.useState(props.heading || '');
+    const [details, setDetails] = React.useState(props.details || '');
 
     const handleAssignee = (event) => {
         setAssignee(event.target.value);
@@ -47,10 +47,11 @@ const AddTaskDialog = (props) => {
     };
     return (
         <Dialog open={props.open} onClose={props.handleClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Add Task</DialogTitle>
+            <DialogTitle id="form-dialog-title">{props.edit? 'Edit Task': 'Add Task'}</DialogTitle>
             <DialogContent>
                 <Grid>
                     <TextField
+                        value={heading}
                         required
                         label='Task Heading'
                         variant='outlined'
@@ -62,6 +63,7 @@ const AddTaskDialog = (props) => {
                 </Grid>
                 <Grid>
                     <TextField
+                        value={details}
                         label='Task Details'
                         variant='outlined'
                         fullWidth
@@ -78,6 +80,7 @@ const AddTaskDialog = (props) => {
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
                         value={assignee}
+                        defaultValue={assignee}
                         onChange={handleAssignee}
                         label="Assignee"
                     >
@@ -88,7 +91,7 @@ const AddTaskDialog = (props) => {
                 </FormControl>
             </DialogContent>
             <DialogActions>
-                <Button color="primary" onClick={handleAdd}>Add</Button>
+                <Button color="primary" onClick={handleAdd}>{props.edit? 'Edit': 'Add'}</Button>
                 <Button color="secondary" onClick={props.handleClose}>Close</Button>
             </DialogActions>
         </Dialog>
